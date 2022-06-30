@@ -49,7 +49,7 @@ define_regex!(
 /// assert_eq!(josa("こんにちは", "을", "를"), "");
 /// ```
 pub fn josa<'a>(input: &str, consonant: &'a str, vowel: &'a str) -> &'a str {
-    let input = clean_str(&input);
+    let input = clean_str(input);
     if input.is_empty() {
         return "";
     }
@@ -67,12 +67,12 @@ fn ends_with_consonant(input: &str) -> bool {
         None => unreachable!(), // should have returned empty &str
     };
 
-    (HANGEULS.is_match(&input) && (last_char as u32 - 0xac00) % 28 > 0)
-        || KO_WITH_NUM.is_match(&input) // checks numbers in Korean pronunciation
-        || EN_WITH_NUM.is_match(&input) // checks numbers in English pronunciation
-        || (input.len() > 1 && EN_FINAL_CONSONANT.is_match(&input)) // checks if English syllable ends with consonant
+    (HANGEULS.is_match(input) && (last_char as u32 - 0xac00) % 28 > 0)
+        || KO_WITH_NUM.is_match(input) // checks numbers in Korean pronunciation
+        || EN_WITH_NUM.is_match(input) // checks numbers in English pronunciation
+        || (input.len() > 1 && EN_FINAL_CONSONANT.is_match(input)) // checks if English syllable ends with consonant
         || (input.len() == 1 && ['l', 'n', 'm', 'r'].contains(&last_char)) // checks if single alphabet ends with consonant
-        || ends_with_consonant_digit(&input, &last_char) // checks if last digit in the number ends with consonant
+        || ends_with_consonant_digit(input, &last_char) // checks if last digit in the number ends with consonant
 }
 
 fn ends_with_consonant_digit(input: &str, last_char: &char) -> bool {
@@ -80,7 +80,7 @@ fn ends_with_consonant_digit(input: &str, last_char: &char) -> bool {
         Some(word) => word,
         None => return false,
     };
-    word.chars().all(|c| c.is_ascii_digit()) && NUM_WITH_FINAL_CONSONANT.contains(&last_char)
+    word.chars().all(|c| c.is_ascii_digit()) && NUM_WITH_FINAL_CONSONANT.contains(last_char)
 }
 
 fn clean_str(input: &str) -> String {
