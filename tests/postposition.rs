@@ -1,4 +1,4 @@
-use postposition::josa;
+use postposition::{josa, Postposition};
 
 #[test]
 fn test_ko() {
@@ -42,4 +42,10 @@ fn test_en() {
 fn test_others() {
     assert_eq!(josa("こんにちは", "을", "를"), "");
     assert_eq!(josa("", "이", "가"), "");
+}
+
+#[test]
+fn test_trait() {
+    assert_eq!("깃허브".josa("을", "를"), "를");
+    assert_eq!("고양이".attached("이", "가"), "고양이가");
 }

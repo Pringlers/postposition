@@ -61,6 +61,25 @@ pub fn josa<'a>(input: &str, consonant: &'a str, vowel: &'a str) -> &'a str {
     }
 }
 
+pub trait Postposition {
+    fn josa<'a>(&self, consonant: &'a str, vowel: &'a str) -> &'a str;
+    fn attached<'a>(&self, consonant: &'a str, vowel: &'a str) -> String;
+}
+
+impl Postposition for str {
+    fn josa<'a>(&self, consonant: &'a str, vowel: &'a str) -> &'a str {
+        josa(self, consonant, vowel)
+    }
+
+    fn attached(&self, consonant: &str, vowel: &str) -> String {
+        let postposition = self.josa(consonant, vowel);
+        if postposition.is_empty() {
+            return self.to_owned();
+        }
+        format!("{self}{postposition}")
+    }
+}
+
 fn ends_with_consonant(input: &str) -> bool {
     let last_char = match input.chars().last() {
         Some(c) => c,
