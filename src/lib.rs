@@ -43,9 +43,11 @@ define_regex!(
 ///
 /// English support is not perfect, but provided on a best-efforts basis.
 ///
-/// # Example
+/// # Examples
+///
 /// ```
-/// # use postposition::josa;
+/// use postposition::josa;
+///
 /// assert_eq!(josa("홍길동", "이", "가"), "이");
 /// assert_eq!(josa("Yuna", "아", "야"), "야");
 /// assert_eq!(josa("こんにちは", "을", "를"), "");
@@ -63,9 +65,52 @@ pub fn josa<'a>(input: &str, consonant: &'a str, vowel: &'a str) -> &'a str {
     }
 }
 
+/// Utility trait to find or attach postpositions.
+///
+/// # Examples
+/// ```
+/// use std::io;
+/// use postposition::Postposition;
+///
+/// # fn main() -> io::Result<()> {
+/// let mut buffer = String::new();
+/// let stdin = io::stdin();
+/// stdin.read_line(&mut buffer)?;
+/// println!(
+///     "당신은 {input} 입력했습니다.",
+///     input = buffer.trim().attached("을", "를")
+/// );
+/// #     Ok(())
+/// # }
+/// ```
 pub trait Postposition: Display {
+    /// This is the equivalent of [`josa`].
+    ///
+    /// [`josa`]: crate::josa
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use postposition::Postposition;
+    ///
+    /// assert_eq!("딸기맛 바나나".josa("이", "가"), "가");
+    /// assert_eq!(24.josa("은", "는"), "는");
+    /// ```
     fn josa<'a>(&self, consonant: &'a str, vowel: &'a str) -> &'a str;
 
+    /// Attaches an appropriate postposition at the end.
+    ///
+    /// When `self` is full of unsupported characters or empty,
+    /// this method will return `self.to_string()`.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use postposition::Postposition;
+    ///
+    /// assert_eq!("딸기맛 바나나".attached("이", "가"), "딸기맛 바나나가");
+    /// assert_eq!(24.attached("은", "는"), "24는");
+    /// ```
     fn attached(&self, consonant: &str, vowel: &str) -> String {
         let postposition = self.josa(consonant, vowel);
         if postposition.is_empty() {
