@@ -130,7 +130,7 @@ macro_rules! postposition_impl {
     ($t:ty) => {
         impl Postposition for $t {
             fn josa<'a>(&self, consonant: &'a str, vowel: &'a str) -> &'a str {
-                josa(&self.to_string(), consonant, vowel)
+                crate::josa(&self.to_string(), consonant, vowel)
             }
         }
     };
