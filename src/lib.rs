@@ -1,3 +1,5 @@
+use std::fmt::Display;
+
 use aho_corasick::AhoCorasick;
 
 const NUM_WITH_FINAL_CONSONANT: [char; 6] = ['0', '1', '3', '6', '7', '8'];
@@ -61,24 +63,47 @@ pub fn josa<'a>(input: &str, consonant: &'a str, vowel: &'a str) -> &'a str {
     }
 }
 
-pub trait Postposition {
+pub trait Postposition: Display {
     fn josa<'a>(&self, consonant: &'a str, vowel: &'a str) -> &'a str;
-    fn attached<'a>(&self, consonant: &'a str, vowel: &'a str) -> String;
+
+    fn attached(&self, consonant: &str, vowel: &str) -> String {
+        let postposition = self.josa(consonant, vowel);
+        if postposition.is_empty() {
+            return self.to_string();
+        }
+        format!("{self}{postposition}")
+    }
 }
 
 impl Postposition for str {
     fn josa<'a>(&self, consonant: &'a str, vowel: &'a str) -> &'a str {
         josa(self, consonant, vowel)
     }
-
-    fn attached(&self, consonant: &str, vowel: &str) -> String {
-        let postposition = self.josa(consonant, vowel);
-        if postposition.is_empty() {
-            return self.to_owned();
-        }
-        format!("{self}{postposition}")
-    }
 }
+
+macro_rules! postposition_impl {
+    ($t:ty) => {
+        impl Postposition for $t {
+            fn josa<'a>(&self, consonant: &'a str, vowel: &'a str) -> &'a str {
+                josa(&self.to_string(), consonant, vowel)
+            }
+        }
+    };
+}
+
+postposition_impl!(char);
+
+postposition_impl!(i8);
+postposition_impl!(i16);
+postposition_impl!(i32);
+postposition_impl!(i64);
+postposition_impl!(isize);
+
+postposition_impl!(u8);
+postposition_impl!(u16);
+postposition_impl!(u32);
+postposition_impl!(u64);
+postposition_impl!(usize);
 
 fn ends_with_consonant(input: &str) -> bool {
     let last_char = match input.chars().last() {

@@ -48,4 +48,10 @@ fn test_others() {
 fn test_trait() {
     assert_eq!("깃허브".josa("을", "를"), "를");
     assert_eq!("고양이".attached("이", "가"), "고양이가");
+
+    assert_eq!('걔'.josa("이", "가"), "가");
+    assert_eq!('P'.attached("은", "는"), "P는");
+
+    assert_eq!(1.josa("은", "는"), "은");
+    assert_eq!(6.attached("과", "와"), "6과");
 }
